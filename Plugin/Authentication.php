@@ -23,7 +23,7 @@
 //	  $plugin->loginAction = "login";
 //	  $plugin->modular = true;
 //	  //$plugin->acl = $acl;
-//	  $fc->registerPlugin();
+//	  $fc->registerPlugin($plugin);
 //	}
 //
 // when no acl is specified, every page is allowed
