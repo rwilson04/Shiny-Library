@@ -1,6 +1,6 @@
 <?php 
 // from http://www.thedeveloperday.com/custom-profiler-for-live-environments/
-class Tz_Db_Profiler extends Zend_Db_Profiler  
+class Shinymayhem_Db_Profiler extends Zend_Db_Profiler  
 {  
     protected $_lastQueryText;  
     protected $_lastQueryType;  
