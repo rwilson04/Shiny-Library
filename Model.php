@@ -102,4 +102,26 @@ class Shinymayhem_Model
 			throw new $this->_exceptionClass("Array required");
 		}
 	}
+
+	public function findById($id)
+	{
+		$this->requireInt($id);
+		$this->getMapper()->find($id, $this);
+	}
+
+	public function findAll()
+	{
+		return $this->getMapper()->fetchAll($this);
+	}
+
+	public function findAllArray()
+	{
+		$results = array();
+		$all = $this->getMapper()->fetchAll($this);
+		foreach ($all as $one)
+		{
+			$results[] = $one->toArray();
+		}
+		return $results;
+	}
 }

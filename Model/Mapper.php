@@ -187,6 +187,7 @@ class Shinymayhem_Model_Mapper
 				unset($entry);
 			}
 		}
+		return $entries;
 	}
 
 	public function fetchRow(Shinymayhem_Model $model, $where=null, $order=null)
