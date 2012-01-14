@@ -12,6 +12,26 @@ class Shinymayhem_Model
 		$this->setExceptionClass($exceptionClass);
 	}
 
+	//magic getters and setters, only use setter when type not required (null ok)
+	//TODO some kind of type checking should still be implemented?
+	public function __call($name, $args)
+	{
+		$property = "_" . lcfirst(substr($name, 3));
+		if (substr($name, 0, 3) == "get" && property_exists($this, $property))
+		{
+			return $this->$property;
+		}
+		elseif (substr($name, 0, 3) == "set" && property_exists($this, $property))
+		{
+			$this->$property = $args[0];
+			return $this;
+		}
+		else
+		{
+			parent::__call($name, $args);
+		}
+	}	
+	
 	public function setExceptionClass($class)
 	{
 		if (is_string($class))
@@ -83,6 +103,26 @@ class Shinymayhem_Model
 		}
 	}
 
+	public function requireStringOrNull($string)
+	{
+		if (!is_string($string) && $string !== null)
+		{
+			throw new $this->_exceptionClass("String required");
+		}
+	}
+
+	public function requireIntOrNull($int)
+	{
+		if (is_string($int))
+		{
+			$int = intval($int);
+		}
+		if (!is_int($int) && $int!== null)
+		{
+			throw new $this->_exceptionClass("Int or null required");
+		}
+	}
+
 	public function requireInt($int)
 	{
 		if (is_string($int))
@@ -123,5 +163,10 @@ class Shinymayhem_Model
 			$results[] = $one->toArray();
 		}
 		return $results;
+	}
+
+	public function delete()
+	{
+		$this->getMapper()->delete($this);
 	}
 }

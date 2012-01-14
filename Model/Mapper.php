@@ -159,6 +159,13 @@ class Shinymayhem_Model_Mapper
 
 	}
 
+	public function delete($model)
+	{
+		$this->validateModel($model);
+		$where = $this->getDbTable()->getAdapter()->quoteInto('id = ?', $model->getId());
+		return $this->getDbTable()->delete($where);
+	}
+
 	public function find($id, $model)
 	{
 		$this->validateModel($model);
