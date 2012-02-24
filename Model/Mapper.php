@@ -149,12 +149,11 @@ class Shinymayhem_Model_Mapper
 		$data = $model->toArray();
 		if (($id = $model->getId()) === null)
 		{
-			unset($data['id']); 
 			return $this->getDbTable()->insert($data);
 		}
 		else
 		{
-			return $this->getDbTable()->update($data, array('id = ?' => $id));
+			$result =  $this->getDbTable()->update($data, array('id = ?' => $id));
 		}
 
 	}
@@ -181,6 +180,7 @@ class Shinymayhem_Model_Mapper
 
 	public function fetchAll($model, $where=null, $order=null, $count=null, $offset=null)
 	{
+		//TODO validate model?
 		$entries = array();
 		if (($resultSet = $this->getDbTable()->fetchAll($where, $order, $count, $offset)) !== null)
 		{

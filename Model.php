@@ -28,7 +28,9 @@ class Shinymayhem_Model
 		}
 		else
 		{
-			parent::__call($name, $args);
+			throw new BadMethodCallException("Method $name does not exist");
+			//no parent to call
+			//parent::__call($name, $args);
 		}
 	}	
 	
