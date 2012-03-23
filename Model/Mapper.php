@@ -178,23 +178,47 @@ class Shinymayhem_Model_Mapper
 		return true;
 	}
 
+	public function getTableName()
+	{
+		$info = $this->getDbTable()->info();
+		return $info['name'];
+	}
+
 	public function fetchAll($model, $where=null, $order=null, $count=null, $offset=null)
 	{
+		//$entries = array();
+		//if (($resultSet = $this->getDbTable()->fetchAll($where, $order, $count, $offset)) !== null)
+		//{
+		//	foreach ($resultSet as $row)
+		//	{
+		//		//$entry = $this->_newModel;
+		//		//TODO can we/do we need to ensure this new model is empty?
+		//		$entry = clone $model;
+		//		$this->populate($row, $entry);
+		//		$entries[] = $entry;
+		//		unset($entry);
+		//	}
+		//}
+		//echo "<pre>";
+		//print_r($resultSet);
+		//return $entries;
+		//
 		//TODO validate model?
-		$entries = array();
-		if (($resultSet = $this->getDbTable()->fetchAll($where, $order, $count, $offset)) !== null)
+		//$db = $this->getDbTable()->getAdapter();
+		$select = $this->getDbTable()->select();
+		//$select = $db->select();
+		//$select->from($this->getTableName());
+		if (!empty($where))
 		{
-			foreach ($resultSet as $row)
-			{
-				//$entry = $this->_newModel;
-				//TODO can we/do we need to ensure this new model is empty?
-				$entry = clone $model;
-				$this->populate($row, $entry);
-				$entries[] = $entry;
-				unset($entry);
-			}
+			$select->where($where);
 		}
-		return $entries;
+		$select->order($order);
+		$adapter = new Shinymayhem_Paginator_Adapter_DbSelect($select);
+		$adapter->setModel($model);
+		$paginator = new Zend_Paginator($adapter);
+		//default to fetch all, fetch paginated on demand
+		$paginator->setDefaultItemCountPerPage(-1);
+		return $paginator;
 	}
 
 	public function fetchRow(Shinymayhem_Model $model, $where=null, $order=null)
@@ -216,5 +240,18 @@ class Shinymayhem_Model_Mapper
 			$array[$column]=$model->$function();
 		}
 		return $array;
+	}
+
+	public function fromArray(Shinymayhem_Model $model, $properties)
+	{
+		foreach ($this->_map as $column=>$property)
+		{
+			//echo "property:$property value:" . $properties[$column] . "<br />";
+			if (!empty($properties[$column]))
+			{
+				$function = 'set' . ucfirst($property);
+				$model->$function($properties[$column]);
+			}
+		}
 	}
 }

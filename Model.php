@@ -79,6 +79,11 @@ class Shinymayhem_Model
 		return $this->getMapper()->toArray($this);
 	}
 
+	public function fromArray($properties)
+	{
+		return $this->getMapper()->fromArray($this, $properties);
+	}
+
 	//public function save($model)
 	public function save()
 	{
