@@ -228,7 +228,11 @@ class Shinymayhem_Model_Mapper
 		if ($row !== null)
 		{
 			$this->populate($row, $model);
+			//return success
+			return true;
 		}
+		//return failure
+		return false;
 	}
 
 	public function toArray($model)

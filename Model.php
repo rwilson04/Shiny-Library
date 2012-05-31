@@ -154,6 +154,7 @@ class Shinymayhem_Model
 	{
 		$this->requireInt($id);
 		$this->getMapper()->find($id, $this);
+		return $this; //for chaining
 	}
 
 	public function findAll()
