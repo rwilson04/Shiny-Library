@@ -147,6 +147,7 @@ class Shinymayhem_Model_Mapper
 	{
 		$this->validateModel($model);
 		$data = $model->toArray();
+		//TODO update this to allow nulls where defaults are set in db but nulls are not allowed
 		if (($id = $model->getId()) === null)
 		{
 			return $this->getDbTable()->insert($data);
@@ -204,6 +205,10 @@ class Shinymayhem_Model_Mapper
 		//return $entries;
 		//
 		//TODO validate model?
+		if (!is_object($model))
+		{
+			throw new $this->_exceptionClass("Invalid model passed to fetchAll function");
+		}
 		//$db = $this->getDbTable()->getAdapter();
 		$select = $this->getDbTable()->select();
 		//$select = $db->select();
