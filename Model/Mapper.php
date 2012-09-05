@@ -110,6 +110,11 @@ class Shinymayhem_Model_Mapper
 		$this->_exceptionClass = $class;
 	}
 
+	public function getMap()
+	{
+		return $this->_map;
+	}
+
 	public function getDbTable()
 	{
 		return $this->_dbTable;
@@ -187,37 +192,29 @@ class Shinymayhem_Model_Mapper
 
 	public function fetchAll($model, $where=null, $order=null, $count=null, $offset=null)
 	{
-		//$entries = array();
-		//if (($resultSet = $this->getDbTable()->fetchAll($where, $order, $count, $offset)) !== null)
-		//{
-		//	foreach ($resultSet as $row)
-		//	{
-		//		//$entry = $this->_newModel;
-		//		//TODO can we/do we need to ensure this new model is empty?
-		//		$entry = clone $model;
-		//		$this->populate($row, $entry);
-		//		$entries[] = $entry;
-		//		unset($entry);
-		//	}
-		//}
-		//echo "<pre>";
-		//print_r($resultSet);
-		//return $entries;
-		//
 		//TODO validate model?
 		if (!is_object($model))
 		{
 			throw new $this->_exceptionClass("Invalid model passed to fetchAll function");
 		}
 		//$db = $this->getDbTable()->getAdapter();
-		$select = $this->getDbTable()->select();
-		//$select = $db->select();
-		//$select->from($this->getTableName());
-		if (!empty($where))
+		if (is_object($where))
 		{
-			$select->where($where);
+			$select = $where;
+		}
+		else
+		{
+			$select = $this->getDbTable()->select();
+			//$select = $db->select();
+			//$select->from($this->getTableName());
+			if (!empty($where))
+			{
+				$select->where($where);
+			}
 		}
 		$select->order($order);
+		//echo $select->__tostring();
+		//echo "<br />";
 		$adapter = new Shinymayhem_Paginator_Adapter_DbSelect($select);
 		$adapter->setModel($model);
 		$paginator = new Zend_Paginator($adapter);
@@ -256,7 +253,7 @@ class Shinymayhem_Model_Mapper
 		foreach ($this->_map as $column=>$property)
 		{
 			//echo "property:$property value:" . $properties[$column] . "<br />";
-			if (!empty($properties[$column]))
+			if (!empty($properties[$column]) && $properties[$column] !== null)
 			{
 				$function = 'set' . ucfirst($property);
 				$model->$function($properties[$column]);

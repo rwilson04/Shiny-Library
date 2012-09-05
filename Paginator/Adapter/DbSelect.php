@@ -21,6 +21,17 @@ class Shinymayhem_Paginator_Adapter_DbSelect extends Zend_Paginator_Adapter_DbSe
 		foreach ($rows as $row)
 		{
 			$entry = clone $model;
+			try
+			{
+			$map = $entry->clear(); //sets all mapped properties to null
+			}
+			catch (Exception $e)
+			{
+				//echo get_class($entry);
+				//echo "<pre>";
+				//throw new Exception($e->getMessage());
+				return $rows;
+			}
 			$entry->fromArray($row);
 			$results[] = $entry;
 			unset($entry);

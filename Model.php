@@ -33,6 +33,21 @@ class Shinymayhem_Model
 			//parent::__call($name, $args);
 		}
 	}	
+
+	public function clear()
+	{
+		$map = $this->getMapper()->getMap();
+		if (!is_array($map))
+		{
+			throw new $this->_exceptionClass("Map is not an array");
+		}
+		foreach ($map as $column=>$p)
+		{
+			$property = '_' . $p;
+			$this->$property = null;
+		}
+		return $map;
+	}
 	
 	public function setExceptionClass($class)
 	{
@@ -157,15 +172,15 @@ class Shinymayhem_Model
 		return $this; //for chaining
 	}
 
-	public function findAll()
+	public function findAll($where=null, $order=null, $count=null, $offset=null)
 	{
-		return $this->getMapper()->fetchAll($this);
+		return $this->getMapper()->fetchAll($this, $where, $order, $count, $offset);
 	}
 
-	public function findAllArray()
+	public function findAllArray($where=null, $order=null, $count=null, $offset=null)
 	{
 		$results = array();
-		$all = $this->getMapper()->fetchAll($this);
+		$all = $this->getMapper()->fetchAll($this, $where, $order, $count, $offset);
 		foreach ($all as $one)
 		{
 			$results[] = $one->toArray();
